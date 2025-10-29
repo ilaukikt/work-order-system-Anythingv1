@@ -15,14 +15,25 @@ import { restartEnvFileChange } from './plugins/restartEnvFileChange';
 
 export default defineConfig({
   // Keep them available via import.meta.env.NEXT_PUBLIC_*
-  envPrefix: 'NEXT_PUBLIC_',
+  envPrefix: ['NEXT_PUBLIC_', 'VITE_'],
   build: {
     target: 'esnext',
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
   },
   optimizeDeps: {
     // Explicitly include fast-glob, since it gets dynamically imported and we
     // don't want that to cause a re-bundle.
-    include: ['fast-glob', 'lucide-react'],
+    include: [
+      'fast-glob',
+      'lucide-react',
+      'react',
+      'react-dom',
+      '@tanstack/react-query',
+    ],
     exclude: [
       '@hono/auth-js/react',
       '@hono/auth-js',
@@ -33,6 +44,10 @@ export default defineConfig({
       'fsevents',
       'lightningcss',
     ],
+  },
+  define: {
+    'process.env.VITE_SUPABASE_URL': JSON.stringify(process.env.VITE_SUPABASE_URL),
+    'process.env.VITE_SUPABASE_SUPABASE_ANON_KEY': JSON.stringify(process.env.VITE_SUPABASE_SUPABASE_ANON_KEY),
   },
   logLevel: 'info',
   plugins: [
