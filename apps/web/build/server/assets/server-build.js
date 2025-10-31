@@ -1,44 +1,15 @@
-import { jsx, Fragment, jsxs } from 'react/jsx-runtime';
+import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import { PassThrough } from 'node:stream';
 import { createReadableStreamFromReadable } from '@react-router/node';
-import { ServerRouter, UNSAFE_withErrorBoundaryProps, UNSAFE_withComponentProps, Outlet, useNavigate, useLocation, Meta, Links, ScrollRestoration, Scripts, useRouteError, useAsyncError } from 'react-router';
+import { ServerRouter, UNSAFE_withComponentProps, Outlet, Meta, Links, ScrollRestoration, Scripts, useNavigate } from 'react-router';
 import { isbot } from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
-import { forwardRef, useEffect, createElement, useRef, useState, Component, useCallback } from 'react';
-import { useButton } from '@react-aria/button';
-import { f as fetchWithHeaders } from './index-kDW0-fTt.js';
-import { SessionProvider } from '@hono/auth-js/react';
-import { serializeError } from 'serialize-error';
-import { toast, Toaster } from 'sonner';
-import { create } from 'zustand';
-import { useIdleTimer } from 'react-idle-timer';
+import { Toaster } from 'sonner';
+import { forwardRef, useEffect, createElement, useRef, useState, useCallback } from 'react';
 import { QueryClientProvider, QueryClient, useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { ArrowLeft, Bell, ChevronDown, Search, Filter, Loader2, AlertCircle, Activity, User, Eye, RefreshCw, Trash2, Edit, Plus, ChevronLeft, Home, Building2, FileText, ChevronUp, Users, Settings, Menu, X, Save, Clock, IndianRupee, ArrowRight, Calendar, MapPin, Download, CreditCard, CheckCircle2, Calculator } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import fg from 'fast-glob';
-import 'node:async_hooks';
-import 'node:console';
-import '@auth/core';
-import '@auth/core/providers/credentials';
-import '@hono/auth-js';
-import '@neondatabase/serverless';
-import 'argon2';
-import 'hono';
-import 'hono/context-storage';
-import 'hono/cors';
-import 'hono/proxy';
-import 'hono/request-id';
-import 'hono/factory';
-import '@hono/node-server';
-import '@hono/node-server/serve-static';
-import 'hono/logger';
-import 'ws';
-import '@auth/core/jwt';
-import 'node:path';
-import 'node:fs';
-import 'node:url';
-import '@react-router/dev/routes';
-import 'node:fs/promises';
 
 const streamTimeout = 5e3;
 function handleRequest(request, responseStatusCode, responseHeaders, routerContext, loadContext) {
@@ -90,6 +61,93 @@ const entryServer = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePropert
   __proto__: null,
   default: handleRequest,
   streamTimeout
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const links = () => [];
+function Layout({
+  children
+}) {
+  return /* @__PURE__ */jsxs("html", {
+    lang: "en",
+    children: [/* @__PURE__ */jsxs("head", {
+      children: [/* @__PURE__ */jsx("meta", {
+        charSet: "utf-8"
+      }), /* @__PURE__ */jsx("meta", {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1"
+      }), /* @__PURE__ */jsx(Meta, {}), /* @__PURE__ */jsx(Links, {})]
+    }), /* @__PURE__ */jsxs("body", {
+      children: [children, /* @__PURE__ */jsx(Toaster, {
+        position: "bottom-right"
+      }), /* @__PURE__ */jsx(ScrollRestoration, {}), /* @__PURE__ */jsx(Scripts, {})]
+    })]
+  });
+}
+const root = UNSAFE_withComponentProps(function App() {
+  return /* @__PURE__ */jsx(Outlet, {});
+});
+
+const route0 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  Layout,
+  default: root,
+  links
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1e3 * 60 * 5,
+      // 5 minutes
+      cacheTime: 1e3 * 60 * 30,
+      // 30 minutes
+      retry: 1,
+      refetchOnWindowFocus: false
+    }
+  }
+});
+function RootLayout({
+  children
+}) {
+  return /* @__PURE__ */ jsxs("html", {
+    lang: "en",
+    children: [/* @__PURE__ */ jsxs("head", {
+      children: [/* @__PURE__ */ jsx("title", {
+        children: "Work Order Management System"
+      }), /* @__PURE__ */ jsx("meta", {
+        name: "description",
+        content: "Construction work order management system"
+      }), /* @__PURE__ */ jsx("meta", {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1"
+      }), /* @__PURE__ */ jsx("script", {
+        src: "https://cdn.tailwindcss.com"
+      })]
+    }), /* @__PURE__ */ jsx("body", {
+      className: "bg-gray-50",
+      children: /* @__PURE__ */ jsx(QueryClientProvider, {
+        client: queryClient,
+        children
+      })
+    })]
+  });
+}
+
+function HomePage() {
+  return null;
+}
+
+const page$8 = UNSAFE_withComponentProps(function WrappedPage(props) {
+  return /* @__PURE__ */jsx(RootLayout, {
+    children: /* @__PURE__ */jsx(HomePage, {
+      ...props
+    })
+  });
+});
+
+const route1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: page$8
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const JSX_RENDER_ID_ATTRIBUTE_NAME = "data-render-id";
@@ -214,579 +272,6 @@ const CreatePolymorphicComponent = /* @__PURE__ */ forwardRef(
     }), children);
   }
 );
-
-function LoadFonts() {
-  return /* @__PURE__ */ jsx(Fragment, {});
-}
-
-const useSandboxStore = create((set, get) => ({
-  status: "idle",
-  isGenerating: false,
-  hasError: false,
-  setStatus: (status) => set({
-    status,
-    isGenerating: status === "codegen-started" || status === "codegen-generating",
-    hasError: status === "codegen-error"
-  }),
-  startCodeGen: () => get().setStatus("codegen-started"),
-  setCodeGenGenerating: () => get().setStatus("codegen-generating"),
-  completeCodeGen: () => get().setStatus("codegen-complete"),
-  errorCodeGen: () => get().setStatus("codegen-error"),
-  stopCodeGen: () => get().setStatus("codegen-stopped"),
-  resetToIdle: () => get().setStatus("idle")
-}));
-
-function HotReloadIndicator() {
-  const {
-    status: sandboxStatus
-  } = useSandboxStore();
-  useEffect(() => {
-    return;
-  }, []);
-  useEffect(() => {
-    const toastStyle = {
-      padding: "16px",
-      background: "#18191B",
-      border: "1px solid #2C2D2F",
-      color: "white",
-      borderRadius: "8px",
-      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-      width: "var(--width)",
-      fontSize: "13px",
-      display: "flex",
-      alignItems: "center",
-      gap: "6px"
-    };
-    switch (sandboxStatus) {
-      case "codegen-started":
-      case "codegen-generating":
-        toast.custom(() => /* @__PURE__ */ jsxs(CreatePolymorphicComponent, {
-          style: {
-            ...toastStyle,
-            padding: "10px"
-          },
-          renderId: "render-84c3d437",
-          as: "div",
-          children: [/* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-            src: "https://www.create.xyz/images/project-revision-button-building-loading-state-white.gif",
-            alt: "loading",
-            className: "w-8 h-8",
-            renderId: "render-0e9ed90f",
-            as: "img"
-          }), /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-            renderId: "render-436fd8f7",
-            as: "span",
-            children: "Updating"
-          })]
-        }), {
-          id: "sandbox-codegen",
-          duration: 3e3
-        });
-        break;
-      case "codegen-complete":
-        toast.custom(() => /* @__PURE__ */ jsxs(CreatePolymorphicComponent, {
-          style: toastStyle,
-          renderId: "render-ac662427",
-          as: "div",
-          children: [/* @__PURE__ */ jsxs("svg", {
-            xmlns: "http://www.w3.org/2000/svg",
-            viewBox: "0 0 20 20",
-            fill: "currentColor",
-            height: "20",
-            width: "20",
-            children: [/* @__PURE__ */ jsx("title", {
-              children: "Success"
-            }), /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-              fillRule: "evenodd",
-              d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z",
-              clipRule: "evenodd",
-              renderId: "render-73677184",
-              as: "path"
-            })]
-          }), /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-            renderId: "render-852c8ec8",
-            as: "span",
-            children: "Updated successfully"
-          })]
-        }), {
-          id: "sandbox-codegen",
-          duration: 3e3
-        });
-        break;
-      case "codegen-error":
-        toast.custom(() => /* @__PURE__ */ jsxs(CreatePolymorphicComponent, {
-          style: toastStyle,
-          renderId: "render-300fa279",
-          as: "div",
-          children: [/* @__PURE__ */ jsxs("svg", {
-            xmlns: "http://www.w3.org/2000/svg",
-            viewBox: "0 0 24 24",
-            fill: "currentColor",
-            height: "20",
-            width: "20",
-            children: [/* @__PURE__ */ jsx("title", {
-              children: "Error"
-            }), /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-              fillRule: "evenodd",
-              d: "M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z",
-              clipRule: "evenodd",
-              renderId: "render-ea2d9238",
-              as: "path"
-            })]
-          }), /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-            renderId: "render-af8676b3",
-            as: "span",
-            children: "Update failed"
-          })]
-        }), {
-          id: "sandbox-codegen",
-          duration: 5e3
-        });
-        break;
-    }
-    return () => {
-    };
-  }, [sandboxStatus]);
-  return null;
-}
-
-function useDevServerHeartbeat() {
-  useIdleTimer({
-    throttle: 6e4 * 3,
-    timeout: 6e4,
-    onAction: () => {
-      fetch("/", {
-        method: "GET"
-      }).catch((error) => {
-      });
-    }
-  });
-}
-
-const links = () => [];
-if (globalThis.window && globalThis.window !== void 0) {
-  globalThis.window.fetch = fetchWithHeaders;
-}
-function SharedErrorBoundary({
-  isOpen,
-  children
-}) {
-  return /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-    className: `fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-500 ease-out ${isOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}`,
-    renderId: "render-11c3c8be",
-    as: "div",
-    children: /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-      className: "bg-[#18191B] text-[#F2F2F2] rounded-lg p-4 max-w-md w-full mx-4 shadow-lg",
-      renderId: "render-970d33f0",
-      as: "div",
-      children: /* @__PURE__ */ jsxs(CreatePolymorphicComponent, {
-        className: "flex items-start gap-3",
-        renderId: "render-e657a2b7",
-        as: "div",
-        children: [/* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-          className: "flex-shrink-0",
-          renderId: "render-eca71ff8",
-          as: "div",
-          children: /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-            className: "w-8 h-8 bg-[#F2F2F2] rounded-full flex items-center justify-center",
-            renderId: "render-9d1b90ce",
-            as: "div",
-            children: /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-              className: "text-black text-[1.125rem] leading-none",
-              renderId: "render-9af0e1e4",
-              as: "span",
-              children: "⚠"
-            })
-          })
-        }), /* @__PURE__ */ jsxs(CreatePolymorphicComponent, {
-          className: "flex flex-col gap-2 flex-1",
-          renderId: "render-432018e2",
-          as: "div",
-          children: [/* @__PURE__ */ jsxs(CreatePolymorphicComponent, {
-            className: "flex flex-col gap-1",
-            renderId: "render-36ce6de1",
-            as: "div",
-            children: [/* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-              className: "font-light text-[#F2F2F2] text-sm",
-              renderId: "render-b2e33c3f",
-              as: "p",
-              children: "App Error Detected"
-            }), /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-              className: "text-[#959697] text-sm font-light",
-              renderId: "render-8cd4df64",
-              as: "p",
-              children: "It looks like an error occurred while trying to use your app."
-            })]
-          }), children]
-        })]
-      })
-    })
-  });
-}
-const ErrorBoundary = UNSAFE_withErrorBoundaryProps(function ErrorBoundary2({
-  error
-}) {
-  return /* @__PURE__ */ jsx(SharedErrorBoundary, {
-    isOpen: true
-  });
-});
-function InternalErrorBoundary({
-  error: errorArg
-}) {
-  const routeError = useRouteError();
-  const asyncError = useAsyncError();
-  const error = errorArg ?? asyncError ?? routeError;
-  const [isOpen, setIsOpen] = useState(false);
-  useEffect(() => {
-    const animateTimer = setTimeout(() => setIsOpen(true), 100);
-    return () => clearTimeout(animateTimer);
-  }, []);
-  const {
-    buttonProps: showLogsButtonProps
-  } = useButton({
-    onPress: useCallback(() => {
-      window.parent.postMessage({
-        type: "sandbox:web:show-logs"
-      }, "*");
-    }, [])
-  }, useRef(null));
-  const {
-    buttonProps: fixButtonProps
-  } = useButton({
-    onPress: useCallback(() => {
-      window.parent.postMessage({
-        type: "sandbox:web:fix",
-        error: serializeError(error)
-      }, "*");
-      setIsOpen(false);
-    }, [error]),
-    isDisabled: !error
-  }, useRef(null));
-  const {
-    buttonProps: copyButtonProps
-  } = useButton({
-    onPress: useCallback(() => {
-      navigator.clipboard.writeText(JSON.stringify(serializeError(error)));
-    }, [error])
-  }, useRef(null));
-  function isInIframe() {
-    try {
-      return window.parent !== window;
-    } catch {
-      return true;
-    }
-  }
-  return /* @__PURE__ */ jsx(SharedErrorBoundary, {
-    isOpen,
-    children: isInIframe() ? /* @__PURE__ */ jsxs(CreatePolymorphicComponent, {
-      className: "flex gap-2",
-      renderId: "render-46904d05",
-      as: "div",
-      children: [!!error && /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-        className: "flex flex-row items-center justify-center gap-[4px] outline-none transition-colors rounded-[8px] border-[1px] bg-[#f9f9f9] hover:bg-[#dbdbdb] active:bg-[#c4c4c4] border-[#c4c4c4] text-[#18191B] text-sm px-[8px] py-[4px] cursor-pointer",
-        type: "button",
-        ...fixButtonProps,
-        renderId: "render-d42bc718",
-        as: "button",
-        children: "Try to fix"
-      }), /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-        className: "flex flex-row items-center justify-center gap-[4px] outline-none transition-colors rounded-[8px] border-[1px] bg-[#2C2D2F] hover:bg-[#414243] active:bg-[#555658] border-[#414243] text-white text-sm px-[8px] py-[4px]",
-        type: "button",
-        ...showLogsButtonProps,
-        renderId: "render-fd7a0681",
-        as: "button",
-        children: "Show logs"
-      })]
-    }) : /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-      className: "flex flex-row items-center justify-center gap-[4px] outline-none transition-colors rounded-[8px] border-[1px] bg-[#2C2D2F] hover:bg-[#414243] active:bg-[#555658] border-[#414243] text-white text-sm px-[8px] py-[4px] w-fit",
-      type: "button",
-      ...copyButtonProps,
-      renderId: "render-b397038d",
-      as: "button",
-      children: "Copy error"
-    })
-  });
-}
-class ErrorBoundaryWrapper extends Component {
-  state = {
-    hasError: false,
-    error: null
-  };
-  static getDerivedStateFromError(error) {
-    return {
-      hasError: true,
-      error
-    };
-  }
-  componentDidCatch(error, info) {
-    console.error(error, info);
-  }
-  render() {
-    if (this.state.hasError) {
-      return /* @__PURE__ */ jsx(InternalErrorBoundary, {
-        error: this.state.error,
-        params: {}
-      });
-    }
-    return this.props.children;
-  }
-}
-function LoaderWrapper({
-  loader
-}) {
-  return /* @__PURE__ */ jsx(Fragment, {
-    children: loader()
-  });
-}
-const ClientOnly = ({
-  loader
-}) => {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  if (!isMounted) return null;
-  return /* @__PURE__ */ jsx(ErrorBoundaryWrapper, {
-    children: /* @__PURE__ */ jsx(LoaderWrapper, {
-      loader
-    })
-  });
-};
-function useHmrConnection() {
-  const [connected, setConnected] = useState(() => false);
-  useEffect(() => {
-    return;
-  }, []);
-  return connected;
-}
-const healthyResponseType = "sandbox:web:healthcheck:response";
-const useHandshakeParent = () => {
-  const isHmrConnected = useHmrConnection();
-  useEffect(() => {
-    const healthyResponse = {
-      type: healthyResponseType,
-      healthy: isHmrConnected
-    };
-    const handleMessage = (event) => {
-      if (event.data.type === "sandbox:web:healthcheck") {
-        window.parent.postMessage(healthyResponse, "*");
-      }
-    };
-    window.addEventListener("message", handleMessage);
-    window.parent.postMessage(healthyResponse, "*");
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
-  }, [isHmrConnected]);
-};
-const useCodeGen = () => {
-  const {
-    startCodeGen,
-    setCodeGenGenerating,
-    completeCodeGen,
-    errorCodeGen,
-    stopCodeGen
-  } = useSandboxStore();
-  useEffect(() => {
-    const handleMessage = (event) => {
-      const {
-        type
-      } = event.data;
-      switch (type) {
-        case "sandbox:web:codegen:started":
-          startCodeGen();
-          break;
-        case "sandbox:web:codegen:generating":
-          setCodeGenGenerating();
-          break;
-        case "sandbox:web:codegen:complete":
-          completeCodeGen();
-          break;
-        case "sandbox:web:codegen:error":
-          errorCodeGen();
-          break;
-        case "sandbox:web:codegen:stopped":
-          stopCodeGen();
-          break;
-      }
-    };
-    window.addEventListener("message", handleMessage);
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
-  }, [startCodeGen, setCodeGenGenerating, completeCodeGen, errorCodeGen, stopCodeGen]);
-};
-const useRefresh = () => {
-  useEffect(() => {
-    const handleMessage = (event) => {
-      if (event.data.type === "sandbox:web:refresh:request") {
-        setTimeout(() => {
-          window.location.reload();
-        }, 1e3);
-        window.parent.postMessage({
-          type: "sandbox:web:refresh:complete"
-        }, "*");
-      }
-    };
-    window.addEventListener("message", handleMessage);
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
-  }, []);
-};
-function Layout({
-  children
-}) {
-  useHandshakeParent();
-  useCodeGen();
-  useRefresh();
-  useDevServerHeartbeat();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const pathname = location?.pathname;
-  useEffect(() => {
-    const handleMessage = (event) => {
-      if (event.data.type === "sandbox:navigation") {
-        navigate(event.data.pathname);
-      }
-    };
-    window.addEventListener("message", handleMessage);
-    window.parent.postMessage({
-      type: "sandbox:web:ready"
-    }, "*");
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
-  }, [navigate]);
-  useEffect(() => {
-    if (pathname) {
-      window.parent.postMessage({
-        type: "sandbox:web:navigation",
-        pathname
-      }, "*");
-    }
-  }, [pathname]);
-  return /* @__PURE__ */ jsxs("html", {
-    lang: "en",
-    children: [/* @__PURE__ */ jsxs("head", {
-      children: [/* @__PURE__ */ jsx("meta", {
-        charSet: "utf-8"
-      }), /* @__PURE__ */ jsx("meta", {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1"
-      }), /* @__PURE__ */ jsx(Meta, {}), /* @__PURE__ */ jsx(Links, {}), /* @__PURE__ */ jsx("script", {
-        type: "module",
-        src: "/src/__create/dev-error-overlay.js"
-      }), /* @__PURE__ */ jsx("link", {
-        rel: "icon",
-        href: "/src/__create/favicon.png"
-      }), /* @__PURE__ */ jsx(LoadFonts, {})]
-    }), /* @__PURE__ */ jsxs("body", {
-      children: [/* @__PURE__ */ jsx(ClientOnly, {
-        loader: () => children
-      }), /* @__PURE__ */ jsx(HotReloadIndicator, {}), /* @__PURE__ */ jsx(Toaster, {
-        position: "bottom-right"
-      }), /* @__PURE__ */ jsx(ScrollRestoration, {}), /* @__PURE__ */ jsx(Scripts, {}), /* @__PURE__ */ jsx("script", {
-        src: "https://kit.fontawesome.com/2c15cc0cc7.js",
-        crossOrigin: "anonymous",
-        async: true
-      })]
-    })]
-  });
-}
-const root = UNSAFE_withComponentProps(function App() {
-  return /* @__PURE__ */ jsx(SessionProvider, {
-    children: /* @__PURE__ */ jsx(Outlet, {})
-  });
-});
-
-const route0 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  ClientOnly,
-  ErrorBoundary,
-  Layout,
-  default: root,
-  links,
-  useHmrConnection
-}, Symbol.toStringTag, { value: 'Module' }));
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1e3 * 60 * 5,
-      // 5 minutes
-      cacheTime: 1e3 * 60 * 30,
-      // 30 minutes
-      retry: 1,
-      refetchOnWindowFocus: false
-    }
-  }
-});
-function RootLayout({
-  children
-}) {
-  return /* @__PURE__ */ jsxs("html", {
-    lang: "en",
-    children: [/* @__PURE__ */ jsxs("head", {
-      children: [/* @__PURE__ */ jsx("title", {
-        children: "Work Order Management System"
-      }), /* @__PURE__ */ jsx("meta", {
-        name: "description",
-        content: "Construction work order management system"
-      }), /* @__PURE__ */ jsx("meta", {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1"
-      }), /* @__PURE__ */ jsx("script", {
-        src: "https://cdn.tailwindcss.com"
-      })]
-    }), /* @__PURE__ */ jsx("body", {
-      className: "bg-gray-50",
-      children: /* @__PURE__ */ jsx(QueryClientProvider, {
-        client: queryClient,
-        children
-      })
-    })]
-  });
-}
-
-function HomePage() {
-  useEffect(() => {
-    window.location.href = "/dashboard";
-  }, []);
-  return /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-    className: "min-h-screen bg-gray-50 flex items-center justify-center",
-    renderId: "render-97e2a9c5",
-    as: "div",
-    children: /* @__PURE__ */ jsxs(CreatePolymorphicComponent, {
-      className: "text-center",
-      renderId: "render-f80ea3da",
-      as: "div",
-      children: [/* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-        className: "animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto",
-        renderId: "render-66e9d53e",
-        as: "div"
-      }), /* @__PURE__ */ jsx(CreatePolymorphicComponent, {
-        className: "mt-4 text-gray-600",
-        renderId: "render-d7948268",
-        as: "p",
-        children: "Redirecting to Dashboard..."
-      })]
-    })
-  });
-}
-
-const page$8 = UNSAFE_withComponentProps(function WrappedPage(props) {
-  return /* @__PURE__ */jsx(RootLayout, {
-    children: /* @__PURE__ */jsx(HomePage, {
-      ...props
-    })
-  });
-});
-
-const route1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-  __proto__: null,
-  default: page$8
-}, Symbol.toStringTag, { value: 'Module' }));
 
 function ActivityLogsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -7907,14 +7392,14 @@ const route10 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   loader
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const serverManifest = {'entry':{'module':'/assets/entry.client-CfKH7RMk.js','imports':['/assets/chunk-OIYGIGL5-Bl7fu__Q.js','/assets/index-DR2uz1nU.js'],'css':[]},'routes':{'root':{'id':'root','parentId':undefined,'path':'','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':true,'module':'/assets/root-B4e9YhD1.js','imports':['/assets/chunk-OIYGIGL5-Bl7fu__Q.js','/assets/index-DR2uz1nU.js','/assets/PolymorphicComponent-BX0mGPA7.js'],'css':['/assets/root-CKEu5gtX.css'],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'page':{'id':'page','parentId':'root','path':undefined,'index':true,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-Dj9v6a7A.js','imports':['/assets/PolymorphicComponent-BX0mGPA7.js','/assets/chunk-OIYGIGL5-Bl7fu__Q.js','/assets/layout-DujwgiLM.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'activity-logs/page':{'id':'activity-logs/page','parentId':'root','path':'activity-logs','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-BrEF6YlE.js','imports':['/assets/PolymorphicComponent-BX0mGPA7.js','/assets/chunk-OIYGIGL5-Bl7fu__Q.js','/assets/layout-DujwgiLM.js','/assets/loader-circle-MXmvxXnL.js','/assets/arrow-left-CZCw9Flu.js','/assets/chevron-down-DWLuOVI3.js','/assets/search-B4Ptt0Lv.js','/assets/filter-BSQRzRej.js','/assets/circle-alert-DZMD2-Db.js','/assets/activity-BvVUradw.js','/assets/user-G-DUsIBb.js','/assets/eye-DIw6tOc0.js','/assets/trash-2-B5TRt7gO.js','/assets/plus-C2kr1Kd7.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'companies/page':{'id':'companies/page','parentId':'root','path':'companies','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-CYPoIbjl.js','imports':['/assets/PolymorphicComponent-BX0mGPA7.js','/assets/chunk-OIYGIGL5-Bl7fu__Q.js','/assets/layout-DujwgiLM.js','/assets/loader-circle-MXmvxXnL.js','/assets/save-CXaWjkq2.js','/assets/x-BK-IUPuR.js','/assets/home-3I0fN2BM.js','/assets/building-2-DRieEeFk.js','/assets/file-text-DWfXN9JN.js','/assets/users-Bh3a1pjf.js','/assets/chevron-down-DWLuOVI3.js','/assets/plus-C2kr1Kd7.js','/assets/circle-alert-DZMD2-Db.js','/assets/trash-2-B5TRt7gO.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'dashboard/page':{'id':'dashboard/page','parentId':'root','path':'dashboard','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-DIAiQi5Z.js','imports':['/assets/PolymorphicComponent-BX0mGPA7.js','/assets/chunk-OIYGIGL5-Bl7fu__Q.js','/assets/layout-DujwgiLM.js','/assets/FullScreenError-CUHBHojx.js','/assets/loader-circle-MXmvxXnL.js','/assets/home-3I0fN2BM.js','/assets/building-2-DRieEeFk.js','/assets/file-text-DWfXN9JN.js','/assets/users-Bh3a1pjf.js','/assets/chevron-down-DWLuOVI3.js','/assets/activity-BvVUradw.js','/assets/circle-alert-DZMD2-Db.js','/assets/indian-rupee-BGUuqj9D.js','/assets/plus-C2kr1Kd7.js','/assets/eye-DIw6tOc0.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'vendors/page':{'id':'vendors/page','parentId':'root','path':'vendors','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-Bl1L5c9n.js','imports':['/assets/PolymorphicComponent-BX0mGPA7.js','/assets/chunk-OIYGIGL5-Bl7fu__Q.js','/assets/layout-DujwgiLM.js','/assets/loader-circle-MXmvxXnL.js','/assets/save-CXaWjkq2.js','/assets/x-BK-IUPuR.js','/assets/home-3I0fN2BM.js','/assets/building-2-DRieEeFk.js','/assets/users-Bh3a1pjf.js','/assets/file-text-DWfXN9JN.js','/assets/chevron-down-DWLuOVI3.js','/assets/activity-BvVUradw.js','/assets/plus-C2kr1Kd7.js','/assets/search-B4Ptt0Lv.js','/assets/circle-alert-DZMD2-Db.js','/assets/trash-2-B5TRt7gO.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'work-orders/page':{'id':'work-orders/page','parentId':'root','path':'work-orders','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-B7GKHe3Z.js','imports':['/assets/PolymorphicComponent-BX0mGPA7.js','/assets/chunk-OIYGIGL5-Bl7fu__Q.js','/assets/layout-DujwgiLM.js','/assets/loader-circle-MXmvxXnL.js','/assets/arrow-left-CZCw9Flu.js','/assets/home-3I0fN2BM.js','/assets/chevron-down-DWLuOVI3.js','/assets/plus-C2kr1Kd7.js','/assets/search-B4Ptt0Lv.js','/assets/building-2-DRieEeFk.js','/assets/filter-BSQRzRej.js','/assets/circle-alert-DZMD2-Db.js','/assets/file-text-DWfXN9JN.js','/assets/indian-rupee-BGUuqj9D.js','/assets/map-pin-CAE5aycg.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'work-orders/[id]/page':{'id':'work-orders/[id]/page','parentId':'root','path':'work-orders/:id','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-Btwho-CJ.js','imports':['/assets/PolymorphicComponent-BX0mGPA7.js','/assets/chunk-OIYGIGL5-Bl7fu__Q.js','/assets/layout-DujwgiLM.js','/assets/loader-circle-MXmvxXnL.js','/assets/save-CXaWjkq2.js','/assets/circle-alert-DZMD2-Db.js','/assets/arrow-left-CZCw9Flu.js','/assets/chevron-down-DWLuOVI3.js','/assets/indian-rupee-BGUuqj9D.js','/assets/trash-2-B5TRt7gO.js','/assets/building-2-DRieEeFk.js','/assets/user-G-DUsIBb.js','/assets/map-pin-CAE5aycg.js','/assets/credit-card-CRmE0Cdr.js','/assets/file-text-DWfXN9JN.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'work-orders/[id]/edit/page':{'id':'work-orders/[id]/edit/page','parentId':'root','path':'work-orders/:id/edit','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-Bf0eWDEs.js','imports':['/assets/PolymorphicComponent-BX0mGPA7.js','/assets/chunk-OIYGIGL5-Bl7fu__Q.js','/assets/layout-DujwgiLM.js','/assets/loader-circle-MXmvxXnL.js','/assets/save-CXaWjkq2.js','/assets/arrow-left-CZCw9Flu.js','/assets/building-2-DRieEeFk.js','/assets/user-G-DUsIBb.js','/assets/map-pin-CAE5aycg.js','/assets/calculator-BwbJLpSQ.js','/assets/credit-card-CRmE0Cdr.js','/assets/FullScreenError-CUHBHojx.js','/assets/circle-alert-DZMD2-Db.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'work-orders/create/page':{'id':'work-orders/create/page','parentId':'root','path':'work-orders/create','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-BAGH4jmI.js','imports':['/assets/PolymorphicComponent-BX0mGPA7.js','/assets/chunk-OIYGIGL5-Bl7fu__Q.js','/assets/layout-DujwgiLM.js','/assets/loader-circle-MXmvxXnL.js','/assets/save-CXaWjkq2.js','/assets/arrow-left-CZCw9Flu.js','/assets/building-2-DRieEeFk.js','/assets/user-G-DUsIBb.js','/assets/map-pin-CAE5aycg.js','/assets/calculator-BwbJLpSQ.js','/assets/credit-card-CRmE0Cdr.js','/assets/file-text-DWfXN9JN.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'__create/not-found':{'id':'__create/not-found','parentId':'root','path':'*?','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/not-found-BYPzOEdM.js','imports':['/assets/PolymorphicComponent-BX0mGPA7.js','/assets/chunk-OIYGIGL5-Bl7fu__Q.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined}},'url':'/assets/manifest-ff98385e.js','version':'ff98385e','sri':undefined};
+const serverManifest = {'entry':{'module':'/assets/entry.client-DwGVy07Z.js','imports':['/assets/chunk-OIYGIGL5-CHh4hLy7.js','/assets/index-C7zt0R96.js'],'css':[]},'routes':{'root':{'id':'root','parentId':undefined,'path':'','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/root-B6cTKix_.js','imports':['/assets/chunk-OIYGIGL5-CHh4hLy7.js','/assets/index-C7zt0R96.js','/assets/index-BBR7LY95.js'],'css':['/assets/root-wkNrGAad.css'],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'page':{'id':'page','parentId':'root','path':undefined,'index':true,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-DpXF_svR.js','imports':['/assets/index-BBR7LY95.js','/assets/chunk-OIYGIGL5-CHh4hLy7.js','/assets/layout-fLsGi43P.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'activity-logs/page':{'id':'activity-logs/page','parentId':'root','path':'activity-logs','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-BglMIpvD.js','imports':['/assets/index-BBR7LY95.js','/assets/chunk-OIYGIGL5-CHh4hLy7.js','/assets/layout-fLsGi43P.js','/assets/PolymorphicComponent-BTRAlSaW.js','/assets/loader-circle-BiXf0MZp.js','/assets/arrow-left-B5a6TF-H.js','/assets/chevron-down-CBML68P_.js','/assets/search-B4nYVHJk.js','/assets/filter-DNH2c2QO.js','/assets/circle-alert-DgKs_Yk2.js','/assets/activity-KnUNH4iM.js','/assets/user-COdBKUpT.js','/assets/eye-8sa-d4vC.js','/assets/trash-2-elYzdV5b.js','/assets/plus-BK-3pfPJ.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'companies/page':{'id':'companies/page','parentId':'root','path':'companies','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-CWrZoDGC.js','imports':['/assets/index-BBR7LY95.js','/assets/chunk-OIYGIGL5-CHh4hLy7.js','/assets/layout-fLsGi43P.js','/assets/PolymorphicComponent-BTRAlSaW.js','/assets/loader-circle-BiXf0MZp.js','/assets/save-CYfpXxh-.js','/assets/x-CLBm2PED.js','/assets/home-BjfbSmrq.js','/assets/building-2-BSOjs4at.js','/assets/file-text-CoEZokur.js','/assets/users-DksgO1ys.js','/assets/chevron-down-CBML68P_.js','/assets/plus-BK-3pfPJ.js','/assets/circle-alert-DgKs_Yk2.js','/assets/trash-2-elYzdV5b.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'dashboard/page':{'id':'dashboard/page','parentId':'root','path':'dashboard','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-CZwBlJ7w.js','imports':['/assets/index-BBR7LY95.js','/assets/chunk-OIYGIGL5-CHh4hLy7.js','/assets/layout-fLsGi43P.js','/assets/PolymorphicComponent-BTRAlSaW.js','/assets/FullScreenError-C7yZdfBZ.js','/assets/loader-circle-BiXf0MZp.js','/assets/home-BjfbSmrq.js','/assets/building-2-BSOjs4at.js','/assets/file-text-CoEZokur.js','/assets/users-DksgO1ys.js','/assets/chevron-down-CBML68P_.js','/assets/activity-KnUNH4iM.js','/assets/circle-alert-DgKs_Yk2.js','/assets/indian-rupee-yqKnPTb1.js','/assets/plus-BK-3pfPJ.js','/assets/eye-8sa-d4vC.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'vendors/page':{'id':'vendors/page','parentId':'root','path':'vendors','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-D6YKFRDq.js','imports':['/assets/index-BBR7LY95.js','/assets/chunk-OIYGIGL5-CHh4hLy7.js','/assets/layout-fLsGi43P.js','/assets/PolymorphicComponent-BTRAlSaW.js','/assets/loader-circle-BiXf0MZp.js','/assets/save-CYfpXxh-.js','/assets/x-CLBm2PED.js','/assets/home-BjfbSmrq.js','/assets/building-2-BSOjs4at.js','/assets/users-DksgO1ys.js','/assets/file-text-CoEZokur.js','/assets/chevron-down-CBML68P_.js','/assets/activity-KnUNH4iM.js','/assets/plus-BK-3pfPJ.js','/assets/search-B4nYVHJk.js','/assets/circle-alert-DgKs_Yk2.js','/assets/trash-2-elYzdV5b.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'work-orders/page':{'id':'work-orders/page','parentId':'root','path':'work-orders','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-BMmuH5xz.js','imports':['/assets/index-BBR7LY95.js','/assets/chunk-OIYGIGL5-CHh4hLy7.js','/assets/layout-fLsGi43P.js','/assets/PolymorphicComponent-BTRAlSaW.js','/assets/loader-circle-BiXf0MZp.js','/assets/arrow-left-B5a6TF-H.js','/assets/home-BjfbSmrq.js','/assets/chevron-down-CBML68P_.js','/assets/plus-BK-3pfPJ.js','/assets/search-B4nYVHJk.js','/assets/building-2-BSOjs4at.js','/assets/filter-DNH2c2QO.js','/assets/circle-alert-DgKs_Yk2.js','/assets/file-text-CoEZokur.js','/assets/indian-rupee-yqKnPTb1.js','/assets/map-pin-Cqfw8YRB.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'work-orders/[id]/page':{'id':'work-orders/[id]/page','parentId':'root','path':'work-orders/:id','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-CJnISw03.js','imports':['/assets/index-BBR7LY95.js','/assets/chunk-OIYGIGL5-CHh4hLy7.js','/assets/layout-fLsGi43P.js','/assets/PolymorphicComponent-BTRAlSaW.js','/assets/loader-circle-BiXf0MZp.js','/assets/save-CYfpXxh-.js','/assets/circle-alert-DgKs_Yk2.js','/assets/arrow-left-B5a6TF-H.js','/assets/chevron-down-CBML68P_.js','/assets/indian-rupee-yqKnPTb1.js','/assets/trash-2-elYzdV5b.js','/assets/building-2-BSOjs4at.js','/assets/user-COdBKUpT.js','/assets/map-pin-Cqfw8YRB.js','/assets/credit-card-DIN2C1JA.js','/assets/file-text-CoEZokur.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'work-orders/[id]/edit/page':{'id':'work-orders/[id]/edit/page','parentId':'root','path':'work-orders/:id/edit','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-dX2Aabne.js','imports':['/assets/index-BBR7LY95.js','/assets/chunk-OIYGIGL5-CHh4hLy7.js','/assets/layout-fLsGi43P.js','/assets/PolymorphicComponent-BTRAlSaW.js','/assets/loader-circle-BiXf0MZp.js','/assets/save-CYfpXxh-.js','/assets/arrow-left-B5a6TF-H.js','/assets/building-2-BSOjs4at.js','/assets/user-COdBKUpT.js','/assets/map-pin-Cqfw8YRB.js','/assets/calculator-aSpBxHSJ.js','/assets/credit-card-DIN2C1JA.js','/assets/FullScreenError-C7yZdfBZ.js','/assets/circle-alert-DgKs_Yk2.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'work-orders/create/page':{'id':'work-orders/create/page','parentId':'root','path':'work-orders/create','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/page-Cn5fryzM.js','imports':['/assets/index-BBR7LY95.js','/assets/chunk-OIYGIGL5-CHh4hLy7.js','/assets/layout-fLsGi43P.js','/assets/PolymorphicComponent-BTRAlSaW.js','/assets/loader-circle-BiXf0MZp.js','/assets/save-CYfpXxh-.js','/assets/arrow-left-B5a6TF-H.js','/assets/building-2-BSOjs4at.js','/assets/user-COdBKUpT.js','/assets/map-pin-Cqfw8YRB.js','/assets/calculator-aSpBxHSJ.js','/assets/credit-card-DIN2C1JA.js','/assets/file-text-CoEZokur.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined},'__create/not-found':{'id':'__create/not-found','parentId':'root','path':'*?','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasClientMiddleware':false,'hasErrorBoundary':false,'module':'/assets/not-found-C7gRcvFf.js','imports':['/assets/index-BBR7LY95.js','/assets/PolymorphicComponent-BTRAlSaW.js','/assets/chunk-OIYGIGL5-CHh4hLy7.js'],'css':[],'clientActionModule':undefined,'clientLoaderModule':undefined,'clientMiddlewareModule':undefined,'hydrateFallbackModule':undefined}},'url':'/assets/manifest-27800b6e.js','version':'27800b6e','sri':undefined};
 
 const assetsBuildDirectory = "build/client";
       const basename = "/";
       const future = {"v8_middleware":false,"unstable_optimizeDeps":false,"unstable_splitRouteModules":false,"unstable_subResourceIntegrity":false,"unstable_viteEnvironmentApi":false};
       const ssr = true;
       const isSpaMode = false;
-      const prerender = ["/*?"];
+      const prerender = [];
       const routeDiscovery = {"mode":"lazy","manifestPath":"/__manifest"};
       const publicPath = "/";
       const entry = { module: entryServer };

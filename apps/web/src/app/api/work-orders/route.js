@@ -1,41 +1,33 @@
-import sql from "@/app/api/utils/sql";
+import { supabase } from "@/app/api/utils/supabase";
 import {
   logActivity,
   createWorkOrderActivity,
 } from "@/app/api/utils/activityLogger";
 
-// GET - List all work orders
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search");
 
-    let query = `
-      SELECT 
-        wo.id, wo.wo_number, wo.date, wo.vendor_name, wo.site_name,
-        wo.total_amount, wo.net_amount, wo.status, wo.created_at,
-        c.company_name
-      FROM work_orders wo
-      LEFT JOIN companies c ON wo.company_id = c.id
-    `;
-
-    let params = [];
+    let query = supabase
+      .from("work_orders")
+      .select(`
+        id, wo_number, date, vendor_name, site_name,
+        total_amount, net_amount, status, created_at,
+        companies:company_id (company_name)
+      `)
+      .order("created_at", { ascending: false });
 
     if (search && search.trim()) {
-      query += ` WHERE 
-        LOWER(wo.wo_number) LIKE LOWER($1) OR 
-        LOWER(wo.vendor_name) LIKE LOWER($1) OR
-        LOWER(wo.site_name) LIKE LOWER($1) OR
-        LOWER(COALESCE(c.company_name, '')) LIKE LOWER($1)
-      `;
-      params.push(`%${search.trim()}%`);
+      query = query.or(
+        `wo_number.ilike.%${search.trim()}%,vendor_name.ilike.%${search.trim()}%,site_name.ilike.%${search.trim()}%`
+      );
     }
 
-    query += ` ORDER BY wo.created_at DESC`;
+    const { data: workOrders, error } = await query;
 
-    const workOrders = await sql(query, params);
+    if (error) throw error;
 
-    // Ensure all work orders have required properties
     const sanitizedWorkOrders = workOrders.map((wo) => ({
       id: wo.id || null,
       wo_number: wo.wo_number || "N/A",
@@ -46,7 +38,7 @@ export async function GET(request) {
       net_amount: wo.net_amount || 0,
       status: wo.status || "Draft",
       created_at: wo.created_at || new Date().toISOString(),
-      company_name: wo.company_name || null,
+      company_name: wo.companies?.company_name || null,
     }));
 
     return Response.json({
@@ -61,17 +53,15 @@ export async function GET(request) {
         error: "Failed to fetch work orders",
         details: error.message,
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
 
-// POST - Create new work order
 export async function POST(request) {
   try {
     const data = await request.json();
 
-    // Validate required fields
     const required = [
       "company_id",
       "vendor_name",
@@ -80,15 +70,11 @@ export async function POST(request) {
       "total_amount",
     ];
 
-    const missingFields = [];
-    for (const field of required) {
-      if (
+    const missingFields = required.filter(
+      (field) =>
         !data[field] ||
         (typeof data[field] === "string" && !data[field].trim())
-      ) {
-        missingFields.push(field);
-      }
-    }
+    );
 
     if (missingFields.length > 0) {
       return Response.json(
@@ -96,11 +82,10 @@ export async function POST(request) {
           success: false,
           error: `Missing required fields: ${missingFields.join(", ")}`,
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
-    // Validate numeric fields
     const totalAmount = parseFloat(data.total_amount);
     if (isNaN(totalAmount) || totalAmount <= 0) {
       return Response.json(
@@ -108,33 +93,32 @@ export async function POST(request) {
           success: false,
           error: "Total amount must be a positive number",
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
-    // Validate company exists
-    const companyCheck = await sql`
-      SELECT id FROM companies WHERE id = ${data.company_id}
-    `;
+    const { data: company } = await supabase
+      .from("companies")
+      .select("id")
+      .eq("id", data.company_id)
+      .maybeSingle();
 
-    if (companyCheck.length === 0) {
+    if (!company) {
       return Response.json(
         {
           success: false,
           error: "Invalid company ID",
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
-    // Calculate amounts with safety checks
-    const hasGst = data.has_gst !== false; // default to true if not specified
+    const hasGst = data.has_gst !== false;
     const retentionPercent = Math.max(
       0,
-      Math.min(100, parseFloat(data.retention_percent || 0)),
-    ); // Clamp between 0-100
+      Math.min(100, parseFloat(data.retention_percent || 0))
+    );
 
-    // Use dynamic GST percentages with validation
     const sgstPercent = hasGst
       ? Math.max(0, Math.min(50, parseFloat(data.sgst_percent || 9)))
       : 0;
@@ -147,7 +131,6 @@ export async function POST(request) {
     const retentionAmount = (grossAmount * retentionPercent) / 100;
     const netAmount = grossAmount - retentionAmount;
 
-    // Generate WO number if not provided
     let woNumber = data.wo_number;
     if (!woNumber || !woNumber.trim()) {
       try {
@@ -156,7 +139,6 @@ export async function POST(request) {
         const mm = String(today.getMonth() + 1).padStart(2, "0");
         const yyyy = today.getFullYear();
 
-        // Get vendor name first few characters (safe handling)
         const vendorShort =
           (data.vendor_name || "")
             .replace(/[^a-zA-Z]/g, "")
@@ -168,90 +150,83 @@ export async function POST(request) {
             .substring(0, 5)
             .toUpperCase() || "SITE";
 
-        // Check for existing WO numbers today to get next sequence
-        const existingCount = await sql`
-          SELECT COUNT(*) as count FROM work_orders 
-          WHERE DATE(created_at) = CURRENT_DATE
-        `;
+        const { count } = await supabase
+          .from("work_orders")
+          .select("*", { count: "exact", head: true })
+          .gte("created_at", new Date().toISOString().split("T")[0]);
 
-        const sequence = String(
-          parseInt(existingCount[0]?.count || 0) + 1,
-        ).padStart(2, "0");
+        const sequence = String((count || 0) + 1).padStart(2, "0");
         woNumber = `W.O.${dd}${mm}${yyyy}-PBPL-${siteShort}-${vendorShort}-${sequence}`;
       } catch (genError) {
         console.error("Error generating WO number:", genError);
-        woNumber = `WO-${Date.now()}`; // Fallback
+        woNumber = `WO-${Date.now()}`;
       }
     }
 
-    // Check for duplicate WO number
-    const duplicateCheck = await sql`
-      SELECT id FROM work_orders WHERE wo_number = ${woNumber}
-    `;
+    const { data: duplicate } = await supabase
+      .from("work_orders")
+      .select("id")
+      .eq("wo_number", woNumber)
+      .maybeSingle();
 
-    if (duplicateCheck.length > 0) {
+    if (duplicate) {
       return Response.json(
         {
           success: false,
           error: "Work order number already exists",
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
-    const result = await sql`
-      INSERT INTO work_orders (
-        wo_number, date, company_id, vendor_name, vendor_contact, vendor_address, vendor_gst,
-        site_name, project_description, work_description, total_amount, has_gst, sgst_percent, cgst_percent,
-        sgst_amount, cgst_amount, gross_amount, retention_percent, retention_amount, net_amount,
-        payment_terms, vendor_bank_name, vendor_bank_account, vendor_bank_ifsc, status
-      ) VALUES (
-        ${woNumber}, 
-        ${data.date || new Date().toISOString().split("T")[0]}, 
-        ${data.company_id},
-        ${data.vendor_name?.trim() || ""}, 
-        ${data.vendor_contact?.trim() || ""}, 
-        ${data.vendor_address?.trim() || ""}, 
-        ${data.vendor_gst?.trim() || ""},
-        ${data.site_name?.trim() || ""}, 
-        ${data.project_description?.trim() || ""}, 
-        ${data.work_description?.trim() || ""},
-        ${totalAmount}, 
-        ${hasGst}, 
-        ${sgstPercent}, 
-        ${cgstPercent}, 
-        ${sgstAmount}, 
-        ${cgstAmount}, 
-        ${grossAmount},
-        ${retentionPercent}, 
-        ${retentionAmount}, 
-        ${netAmount}, 
-        ${data.payment_terms?.trim() || ""},
-        ${data.vendor_bank_name?.trim() || ""}, 
-        ${data.vendor_bank_account?.trim() || ""}, 
-        ${data.vendor_bank_ifsc?.trim() || ""},
-        ${data.status?.trim() || "Draft"}
-      ) RETURNING *
-    `;
+    const { data: workOrder, error } = await supabase
+      .from("work_orders")
+      .insert({
+        wo_number: woNumber,
+        date: data.date || new Date().toISOString().split("T")[0],
+        company_id: data.company_id,
+        vendor_name: data.vendor_name?.trim() || "",
+        vendor_contact: data.vendor_contact?.trim() || "",
+        vendor_address: data.vendor_address?.trim() || "",
+        vendor_gst: data.vendor_gst?.trim() || "",
+        site_name: data.site_name?.trim() || "",
+        project_description: data.project_description?.trim() || "",
+        work_description: data.work_description?.trim() || "",
+        total_amount: totalAmount,
+        has_gst: hasGst,
+        sgst_percent: sgstPercent,
+        cgst_percent: cgstPercent,
+        sgst_amount: sgstAmount,
+        cgst_amount: cgstAmount,
+        gross_amount: grossAmount,
+        retention_percent: retentionPercent,
+        retention_amount: retentionAmount,
+        net_amount: netAmount,
+        payment_terms: data.payment_terms?.trim() || "",
+        vendor_bank_name: data.vendor_bank_name?.trim() || "",
+        vendor_bank_account: data.vendor_bank_account?.trim() || "",
+        vendor_bank_ifsc: data.vendor_bank_ifsc?.trim() || "",
+        status: data.status?.trim() || "Draft",
+      })
+      .select()
+      .single();
 
-    const workOrder = result[0];
+    if (error) throw error;
 
-    // Log activity for work order creation
     try {
       const activityData = createWorkOrderActivity(
         workOrder.id,
         workOrder,
-        "Admin User",
+        "Admin User"
       );
       await logActivity(activityData);
     } catch (logError) {
       console.error("Error logging activity:", logError);
-      // Don't fail the request if logging fails
     }
 
     return Response.json({
       success: true,
-      workOrder: result[0],
+      workOrder,
     });
   } catch (error) {
     console.error("Error creating work order:", error);
@@ -261,7 +236,7 @@ export async function POST(request) {
         error: "Failed to create work order",
         details: error.message,
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
