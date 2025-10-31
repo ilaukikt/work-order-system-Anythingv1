@@ -3,21 +3,10 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-// These environment variables need to be set in your project
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY // Use service role key for server-side operations
+const supabaseUrl = 'https://dboqykyyyuoyekzdhxlm.supabase.co'
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRib3F5a3l5eXVveWVremRoeGxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MjAyODEsImV4cCI6MjA3NzI5NjI4MX0.BnRCh3sJqoZY9eU713lMLQVgFLdElbSnVFb57oDRVac'
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  throw new Error('Missing Supabase environment variables')
-}
-
-// Create Supabase client for server-side operations
-export const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  }
-})
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Helper function to handle Supabase responses
 export const handleSupabaseResponse = (response) => {
