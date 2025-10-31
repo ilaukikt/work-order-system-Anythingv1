@@ -4,6 +4,13 @@
 set -e
 
 PROJECT_DIR="/tmp/cc-agent/59379653/project/apps/web"
+
+# Ensure /home/project symlink exists (required for build system)
+if [ ! -L "/home/project" ]; then
+    echo "🔗 Creating symlink /home/project -> $PROJECT_DIR"
+    ln -sf "$PROJECT_DIR" /home/project
+fi
+
 cd "$PROJECT_DIR"
 
 # Check if node_modules exists
