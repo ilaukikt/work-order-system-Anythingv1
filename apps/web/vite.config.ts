@@ -52,7 +52,7 @@ export default defineConfig({
   logLevel: 'info',
   plugins: [
     nextPublicProcessEnv(),
-    restartEnvFileChange(),
+    // restartEnvFileChange(), // DISABLED - was causing server crashes
     reactRouterHonoServer({
       serverEntryPoint: './__create/index.ts',
       runtime: 'node',
@@ -61,21 +61,21 @@ export default defineConfig({
       include: ['src/**/*.{js,jsx,ts,tsx}'], // or RegExp: /src\/.*\.[tj]sx?$/
       exclude: /node_modules/, // skip everything else
       babelConfig: {
-        babelrc: false, // don’t merge other Babel files
+        babelrc: false, // don't merge other Babel files
         configFile: false,
         plugins: ['styled-jsx/babel'],
       },
     }),
-    restart({
-      delay: 2000,
-      restart: [
-        'src/app/layout.jsx',
-        'src/app/layout.tsx',
-        'src/app/root.tsx',
-        'react-router.config.ts',
-        'vite.config.ts',
-      ],
-    }),
+    // restart({ // DISABLED - was causing server crashes
+    //   delay: 2000,
+    //   restart: [
+    //     'src/app/layout.jsx',
+    //     'src/app/layout.tsx',
+    //     'src/app/root.tsx',
+    //     'react-router.config.ts',
+    //     'vite.config.ts',
+    //   ],
+    // }),
     consoleToParent(),
     loadFontsFromTailwindSource(),
     addRenderIds(),
